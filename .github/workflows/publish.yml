@@ -25,8 +25,8 @@ jobs:
         id: generate-token
         uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
         with:
-          appId: ${{ secrets.APP_ID }}
-          privateKey: ${{ secrets.APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Trigger Homebrew tap update
         env:
