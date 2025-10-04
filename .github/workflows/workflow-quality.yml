@@ -67,7 +67,7 @@ jobs:
 
       - name: Upload secrets scan results
         if: always()
-        uses: github/codeql-action/upload-sarif@4110a988ca85d436f1ad69dd90aed6222a6ac39e # v3.30.6
+        uses: github/codeql-action/upload-sarif@64d10c13136e1c5bce3e5fbde8d4906eeaafc885 # v3.30.6
         with:
           sarif_file: results.sarif
           wait-for-processing: true
@@ -92,7 +92,7 @@ jobs:
           publish_results: false
 
       - name: Upload scorecard results
-        uses: github/codeql-action/upload-sarif@4110a988ca85d436f1ad69dd90aed6222a6ac39e # v3.30.6
+        uses: github/codeql-action/upload-sarif@64d10c13136e1c5bce3e5fbde8d4906eeaafc885 # v3.30.6
         with:
           sarif_file: scorecard.sarif
           wait-for-processing: true
