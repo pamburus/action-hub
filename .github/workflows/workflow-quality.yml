@@ -27,14 +27,12 @@ jobs:
       pull-requests: write
       checks: write
     steps:
-      # v5.0.0
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
 
       - name: Lint GitHub Actions workflows
-        # v1.67.0
-        uses: reviewdog/action-actionlint@41d389d0085e999a06c49c160bd2f74492274694
+        uses: reviewdog/action-actionlint@41d389d0085e999a06c49c160bd2f74492274694 # v1.67.0
         with:
           github_token: ${{ github.token }}
           reporter: github-check
@@ -48,21 +46,18 @@ jobs:
       contents: read
       security-events: write
     steps:
-      # v5.0.0
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
 
       - name: Lint YAML files
-        # v3.1.1
-        uses: ibiqlik/action-yamllint@2576378a8e339169678f9939646ee3ee325e845c
+        uses: ibiqlik/action-yamllint@2576378a8e339169678f9939646ee3ee325e845c # v3.1.1
         with:
           file_or_dir: .github/workflows
           format: colored
 
       - name: Scan for secrets
-        # v2.3.9
-        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -72,8 +67,7 @@ jobs:
 
       - name: Upload secrets scan results
         if: always()
-        # v3.30.6
-        uses: github/codeql-action/upload-sarif@4110a988ca85d436f1ad69dd90aed6222a6ac39e
+        uses: github/codeql-action/upload-sarif@4110a988ca85d436f1ad69dd90aed6222a6ac39e # v3.30.6
         with:
           sarif_file: results.sarif
           wait-for-processing: true
@@ -86,22 +80,19 @@ jobs:
       security-events: write
       id-token: write
     steps:
-      # v5.0.0
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
 
       - name: Security scorecard
-        # v2.4.3
-        uses: ossf/scorecard-action@99c09fe975337306107572b4fdf4db224cf8e2f2
+        uses: ossf/scorecard-action@99c09fe975337306107572b4fdf4db224cf8e2f2 # v2.4.3
         with:
           results_file: scorecard.sarif
           results_format: sarif
           publish_results: false
 
       - name: Upload scorecard results
-        # v3.30.6
-        uses: github/codeql-action/upload-sarif@4110a988ca85d436f1ad69dd90aed6222a6ac39e
+        uses: github/codeql-action/upload-sarif@4110a988ca85d436f1ad69dd90aed6222a6ac39e # v3.30.6
         with:
           sarif_file: scorecard.sarif
           wait-for-processing: true
