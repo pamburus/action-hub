@@ -76,6 +76,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@4110a988ca85d436f1ad69dd90aed6222a6ac39e
         with:
           sarif_file: results.sarif
+          wait-for-processing: true
 
   security-scorecard:
     runs-on: ubuntu-latest
@@ -103,3 +104,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@4110a988ca85d436f1ad69dd90aed6222a6ac39e
         with:
           sarif_file: scorecard.sarif
+          wait-for-processing: true
