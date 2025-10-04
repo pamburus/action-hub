@@ -1,0 +1,44 @@
+---
+name: Publish Package Updates
+
+"on":
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "Package name to publish (leave empty to update all)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash -euxo pipefail {0}
+
+jobs:
+  trigger-updates:
+    name: Trigger Updates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        # v2.1.4
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Trigger Homebrew tap update
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          gh workflow run auto-update.yml \
+            --repo pamburus/homebrew-tap \
+            --field formulas="${{ github.event.inputs.package }}"
+
+      - name: Trigger Scoop bucket update
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          gh workflow run auto-update.yml --repo pamburus/scoop-bucket
