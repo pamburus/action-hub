@@ -1,0 +1,105 @@
+---
+name: Workflow Quality
+
+"on":
+  pull_request:
+    paths: [".github/workflows/**"]
+  push:
+    branches: [main]
+    paths: [".github/workflows/**"]
+
+concurrency:
+  group: workflow-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash -euxo pipefail {0}
+
+jobs:
+  lint-actions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    steps:
+      # v5.0.0
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          fetch-depth: 0
+
+      - name: Lint GitHub Actions workflows
+        # v1.67.0
+        uses: reviewdog/action-actionlint@41d389d0085e999a06c49c160bd2f74492274694
+        with:
+          github_token: ${{ github.token }}
+          reporter: github-check
+          level: warning
+          fail_level: error
+          actionlint_flags: -color
+
+  lint-and-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      # v5.0.0
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          fetch-depth: 0
+
+      - name: Lint YAML files
+        # v3.1.1
+        uses: ibiqlik/action-yamllint@2576378a8e339169678f9939646ee3ee325e845c
+        with:
+          file_or_dir: .github/workflows
+          format: colored
+
+      - name: Scan for secrets
+        # v2.3.9
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          args: >-
+            detect --source . --redact --report-format sarif
+            --report-path gitleaks.sarif
+
+      - name: Upload secrets scan results
+        if: always()
+        # v3.30.6
+        uses: github/codeql-action/upload-sarif@4110a988ca85d436f1ad69dd90aed6222a6ac39e
+        with:
+          sarif_file: results.sarif
+
+  security-scorecard:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
+    steps:
+      # v5.0.0
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          fetch-depth: 0
+
+      - name: Security scorecard
+        # v2.4.3
+        uses: ossf/scorecard-action@99c09fe975337306107572b4fdf4db224cf8e2f2
+        with:
+          results_file: scorecard.sarif
+          results_format: sarif
+          publish_results: false
+
+      - name: Upload scorecard results
+        # v3.30.6
+        uses: github/codeql-action/upload-sarif@4110a988ca85d436f1ad69dd90aed6222a6ac39e
+        with:
+          sarif_file: scorecard.sarif
