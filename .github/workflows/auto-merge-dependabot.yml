@@ -37,8 +37,9 @@ jobs:
 
       - name: Enable auto-merge for Dependabot PRs
         run: |
-          gh pr merge --auto --squash ${{ github.event.pull_request.number }}
+          gh pr merge --auto --squash ${{ github.event.pull_request.number }} --repo ${{ github.repository }}
           gh pr comment ${{ github.event.pull_request.number }} \
-            --body "🤖 Auto-merge enabled. This PR will merge automatically once all required checks pass."
+            --body "🤖 Auto-merge enabled. This PR will merge automatically once all required checks pass." \
+            --repo ${{ github.repository }}
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
