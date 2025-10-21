@@ -3,10 +3,8 @@ name: Workflow Quality
 
 "on":
   pull_request:
-    paths: [".github/workflows/**"]
   push:
     branches: [main]
-    paths: [".github/workflows/**"]
 
 concurrency:
   group: workflow-quality-${{ github.ref }}
@@ -32,7 +30,7 @@ jobs:
           fetch-depth: 0
 
       - name: Lint GitHub Actions workflows
-        uses: reviewdog/action-actionlint@95395aac8c053577d0bc67eb7b74936c660c6f66 # v1.67.0
+        uses: reviewdog/action-actionlint@f00ad0691526c10be4021a91b2510f0a769b14d0 # v1.68.0
         with:
           github_token: ${{ github.token }}
           reporter: github-check
@@ -67,7 +65,7 @@ jobs:
 
       - name: Upload secrets scan results
         if: always()
-        uses: github/codeql-action/upload-sarif@64d10c13136e1c5bce3e5fbde8d4906eeaafc885 # v3.30.6
+        uses: github/codeql-action/upload-sarif@16140ae1a102900babc80a33c44059580f687047 # v4.30.9
         with:
           sarif_file: results.sarif
           wait-for-processing: true
@@ -91,7 +89,7 @@ jobs:
           publish_results: false
 
       - name: Upload scorecard results
-        uses: github/codeql-action/upload-sarif@64d10c13136e1c5bce3e5fbde8d4906eeaafc885 # v3.30.6
+        uses: github/codeql-action/upload-sarif@16140ae1a102900babc80a33c44059580f687047 # v4.30.9
         with:
           sarif_file: scorecard.sarif
           wait-for-processing: true
